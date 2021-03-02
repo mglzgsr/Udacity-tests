@@ -8,7 +8,12 @@ version: 2.1
 
 jobs:
   create_infrastructure:
-    - image:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          command: ./scripts/create_cf.sh test template.yml
 workflows:
   # Name the workflow "welcome"
   testing:
