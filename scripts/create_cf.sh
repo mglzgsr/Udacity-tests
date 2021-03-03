@@ -1,9 +1,3 @@
-aws cloudformation delete-stack \
---stack-name $1 \
---region=us-west-2 \
-
-sleep 90
-
 aws cloudformation create-stack \
 --stack-name $1 \
 --template-body file://$2  \

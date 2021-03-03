@@ -7,6 +7,13 @@ version: 2.1
 ## Orchestrate or schedule a set of jobs
 
 jobs:
+  delete_infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          command: ./scripts/delete_cf.sh test
   create_infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -41,7 +48,10 @@ workflows:
   testing:
     # Run the welcome/run job in its own container
     jobs:
-      - create_infrastructure
+      - delete_infrastructure
+      - create_infrastructure:
+          requires:
+            - delete_infrastructure
       - describe_infrastructure:
           requires:
             - create_infrastructure
