@@ -29,13 +29,11 @@ jobs:
     steps:
       - checkout
       - run:
-          command: sudo apt-get install -y tar
-      - run:
           command: ./scripts/describe.sh
-      - persist_to_workspace:
-          root:  ~/
-          paths:
-            - inventory.txt
+#      - persist_to_workspace:
+#          root:  ~/
+#          paths:
+#            - inventory.txt
   configure_infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -43,8 +41,8 @@ jobs:
       - checkout
       - run:
           command: sudo apt-get install -y tar
-      - attach_workspace:
-          at: ~/
+#      - attach_workspace:
+#          at: ~/
       - add_ssh_keys:
           fingerprints:
             - "7d:ae:fe:8b:fd:e5:57:57:c4:8c:51:1e:e1:c3:d5:59"
