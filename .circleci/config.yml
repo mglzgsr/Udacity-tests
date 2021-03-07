@@ -18,7 +18,8 @@ jobs:
       - checkout
       - run:
           command: ./scripts/create_cf.sh test-${CIRCLE_WORKFLOW_ID} template.yml
-      - run: return 1
+      - run:
+          command: return 1
       - delete_infrastructure
         when: on_fail
 
