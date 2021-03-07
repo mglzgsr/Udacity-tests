@@ -5,82 +5,25 @@ version: 2.1
 #  # Declare a dependency on the welcome-orb
 #  welcome: circleci/welcome-orb@0.4.1
 ## Orchestrate or schedule a set of jobs
-
-jobs:
+commands:
   delete_infrastructure:
-    docker:
-      - image: amazon/aws-cli
     steps:
-      - checkout
       - run:
-          command: ./scripts/delete_cf.sh test
-      - run:
-          command: sleep 150
+          command: ./scripts/delete_cf.sh
+jobs:
   create_infrastructure:
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
       - run:
-          command: ./scripts/create_cf.sh test template.yml
-  describe_infrastructure:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          command: ./scripts/describe.sh
-#      - persist_to_workspace:
-#          root:  ~/
-#          paths:
-#            - inventory.txt
-  configure_infrastructure:
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-#      - run:
-#          command: sudo apt-get install -y tar
-#      - attach_workspace:
-#          at: ~/
-      - add_ssh_keys:
-          fingerprints:
-            - "7d:ae:fe:8b:fd:e5:57:57:c4:8c:51:1e:e1:c3:d5:59"
-      - run:
-          name: Install dependencies
-          command: apk add --update ansible
-      - run:
-          name: Configure server
-          command: ansible-playbook -i inventory.txt playbook.yml
-  smoke_test:
-    docker:
-      - image: alpine:latest
-    steps:
-      - run: apk add --update curl
-      - run:
-          name: smoke test.
-          command: |
-            URL="https://www.google.com/"
-            if curl -s --head ${URL} # test if google.com works
-            then
-              return 0
-            else
-              return 1
-            fi
+          command: ./scripts/create_cf.sh test-${CIRCLE_WORKFLOW_ID} template.yml
+      - run: return 1
+      - delete_infrastructure
+        when: on_fail
+
 
 workflows:
   testing:
     jobs:
-      - delete_infrastructure
-      - create_infrastructure:
-          requires:
-            - delete_infrastructure
-      - describe_infrastructure:
-          requires:
-            - create_infrastructure
-      - configure_infrastructure:
-          requires:
-            - describe_infrastructure
-#      - smoke_test:
-#          requires:
-#            - configure_infrastructure
+      - create_infrastructure
