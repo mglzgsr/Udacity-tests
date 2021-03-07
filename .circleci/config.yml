@@ -28,11 +28,17 @@ jobs:
       - checkout
       - run:
           command: ./scripts/describe.sh
+      - persist_to_workspace:
+          root:  ~/
+          paths:
+            - inventory.txt
   configure_infrastructure:
     docker:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/
       - add_ssh_keys:
           fingerprints:
             - "7d:ae:fe:8b:fd:e5:57:57:c4:8c:51:1e:e1:c3:d5:59"
