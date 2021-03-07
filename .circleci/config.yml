@@ -14,6 +14,8 @@ jobs:
       - checkout
       - run:
           command: ./scripts/delete_cf.sh test
+      - run:
+          command: sleep 150
   create_infrastructure:
     docker:
       - image: amazon/aws-cli
