@@ -28,21 +28,21 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
-          command: ./scripts/describe.sh
-#      - persist_to_workspace:
-#          root:  ~/
-#          paths:
-#            - inventory.txt
+      - run: yum install -y tar
+      - run: ./scripts/describe.sh
+      - persist_to_workspace:
+          root:  $CIRCLE_WORKING_DIRECTORY
+          paths:
+            - inventory.txt
   configure_infrastructure:
     docker:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
-#      - run:
-#          command: sudo apt-get install -y tar
-#      - attach_workspace:
-#          at: ~/
+      - run:
+          command: sudo apk add -y tar
+      - attach_workspace:
+          at: $CIRCLE_WORKING_DIRECTORY
       - add_ssh_keys:
           fingerprints:
             - "7d:ae:fe:8b:fd:e5:57:57:c4:8c:51:1e:e1:c3:d5:59"
