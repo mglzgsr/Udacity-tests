@@ -23,12 +23,14 @@ jobs:
       - checkout
       - run:
           command: ./scripts/create_cf.sh test template.yml
+      - run:
+          command: sleep 150
   describe_infrastructure:
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: yum install -y tar
+      - run: yum install -y tar gzip
       - run: ./scripts/describe.sh
       - persist_to_workspace:
           root:  $CIRCLE_WORKING_DIRECTORY
@@ -40,7 +42,7 @@ jobs:
     steps:
       - checkout
       - run:
-          command: sudo apk add -y tar
+          command: sudo apk add -y tar gzip
       - attach_workspace:
           at: $CIRCLE_WORKING_DIRECTORY
       - add_ssh_keys:
